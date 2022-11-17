@@ -1,0 +1,11 @@
+.ilk
+.obj
+.pdb
+
+.tlog
+.ipch
+
+**\x64
+**\.vs
+**\.vscode
+**\Debug
