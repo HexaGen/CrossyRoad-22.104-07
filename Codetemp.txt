@@ -1,0 +1,315 @@
+//void loginMain(void) {
+//	user_info *loginUser;
+//	char* id_input, * pw_input;
+//	char attempt = 0;
+//	while (attempt < 3) {
+//		printf("%s", alignSpace_Q1p5);
+//		id_input = user_INPUTidentity("ID");
+//		printf("%s", alignSpace_Q1p5);
+//		pw_input = user_INPUTpw("PW");
+//
+//
+//		loginUser = user_DB_GET(id_input);
+//		if (NULL == loginUser) {
+//			char determine = getchar();
+//			printf("ID가 존재하지 않습니다. 회원가입하실래요?\n");
+//			if (determine == 'y' || determine == 'Y')
+//				return registerationMain();
+//			else
+//				return titleMain();
+//		} else {
+//			if (true == user_pw_CHECK(id_input, pw_input))
+//				return gameMain(id_input);		// ID - PW 일치 게임화면으로
+//			else
+//				printf("옳지않은 PW\n");
+//		}
+//		attempt++;
+//	}
+//	printf("비밀번호를 3회 실수했습니다.\n");
+//	return titleMain();
+//}
+//void registerationMain(void) {
+//	char* id_input, * nick_input, * pw_input;
+//	bool STOP_REGISTERATION = false;
+//	printf("%s", alignSpace_Q1p5);
+//	id_input = user_INPUTidentity("ID");
+//	if (id_input == NULL) {
+//		deleteConsoleLine(1);
+//		cursorDisplay("hide");
+//		return titleMain();
+//	}
+//	printf("%s", alignSpace_Q1p5);
+//	nick_input = user_INPUTidentity("NICKNAME");
+//	if (nick_input == NULL) { 
+//		deleteConsoleLine(2);
+//		cursorDisplay("hide");
+//		return titleMain();
+//	}
+//	printf("%s", alignSpace_Q1p5);
+//	pw_input = user_INPUTpw("PW");
+//	if (pw_input == NULL) { 
+//		deleteConsoleLine(3);
+//		cursorDisplay("hide"); 
+//		return titleMain();
+//	}
+//
+//
+//	user_DB_ADD(id_input, nick_input);
+//	user_pw_ADD(id_input, pw_input);
+//
+//	printf("%d, %s", strSame(user_DB_GET(id_input)->id, id_input), user_DB_GET(id_input)->id);
+//
+//	free(id_input); free(nick_input); free(pw_input);
+//
+//	cursorDisplay("hide");
+//	return titleMain();
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+20221127
+
+void titleMain(void) {
+	cursorDisplay("hide");
+	unsigned int currentButton = 0;
+	bool NEXT = false;
+	titleButton(currentButton);
+	while (true) {
+		changeButtonState(&currentButton, TOTAL_TITLE_BUTTON, &NEXT);
+		if (NEXT)
+			break;
+		deleteConsoleLine(4);
+		titleButton(currentButton);
+	}
+	titleNext(currentButton);
+}
+void titleNext(const unsigned int _Mode) {
+	switch (_Mode)
+	{
+	case 0:
+		//deleteConsoleLine(4);
+		cursorDisplay("reveal");
+		loginMain();
+		break;
+	case 1:
+		//deleteConsoleLine(4);
+		cursorDisplay("reveal");
+		registerationMain();
+		break;
+	case 2:
+		exitMain();
+	}
+}
+void loginMain(void) {
+	user_info* loginUser = { 0, };
+	char* id_input, * pw_input;
+	int i=0;
+	for (; i < 3;) {
+		if(i==0)
+			deleteConsoleLine(4);
+		else
+			deleteConsoleLine(3);
+
+		printf("%s", alignSpace_Q1p5);
+		id_input = user_INPUTidentity("ID");
+		if (id_input == NULL) { deleteConsoleLine(1); break; }	// esc 입력시 중단
+		printf("%s", alignSpace_Q1p5);
+		pw_input = user_INPUTpw("PW");
+		if (pw_input == NULL) { deleteConsoleLine(2); break; }						// esc 입력시 중단
+		
+		if (NULL == user_DB_GET(id_input)) {
+			printf("회원가입되지 않은 유저입니다. 가입하시겠습니까?");
+			char c = getchar();
+			if ('y' == c || 'Y' == c) {
+				deleteConsoleLine(4);
+				return registerationMain();
+			}
+			else {
+				deleteConsoleLine(3);
+				return titleMain();
+			}
+		}
+		if (true == user_pw_CHECK(id_input, pw_input)) {
+			return gameMain(id_input);
+		}
+		i++;
+	}
+	deleteConsoleLine(3);
+	if (i == 2) {
+		printf("비밀번호를 3회 잘못 입력하였습니다.");
+		Sleep(1000);
+		deleteConsoleLine(1);
+	}
+
+	//system("cls");	// 임시
+	return titleMain();
+}
+void registerationMain(void) {
+	char* id_input, * nick_input, * pw_input;
+	for (int i = 0; i < 1; i++)
+	{
+		deleteConsoleLine(4);
+
+		printf("%s", alignSpace_Q1p5);
+		id_input = user_INPUTidentity("ID");
+		if (id_input == NULL) { deleteConsoleLine(1); cursorDisplay("hide"); return titleMain(); }
+		printf("%s", alignSpace_Q1p5);
+		nick_input = user_INPUTidentity("NICKNAME");
+		if (nick_input == NULL) { deleteConsoleLine(2); cursorDisplay("hide"); return titleMain(); }
+		printf("%s", alignSpace_Q1p5);
+		pw_input = user_INPUTpw("PW");
+		if (pw_input == NULL) { deleteConsoleLine(3); cursorDisplay("hide"); return titleMain(); }
+
+		
+	}
+	user_DB_ADD(id_input, nick_input);
+	user_pw_ADD(id_input, pw_input);
+
+	//printf("%d, %s", strSame(user_DB_GET(id_input)->id, id_input), user_DB_GET(id_input)->id);
+
+	free(id_input); free(nick_input); free(pw_input);
+
+	deleteConsoleLine(4);
+	return titleMain();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//1201
+
+user_info* user_DB_GET(const char* _Id) {
+	FILE* userData = fopen(USER_INFO_FILE, "rb");
+	user_info* targetUser = { 0, };
+	if (NULL == userData) {
+		printf("[user_DB_GET][userControl.h][ ERROR ] there is noting in \"%s\"\n", USER_INFO_FILE);
+		return NULL;
+	} else {
+		for (int i = 0; i < user_population_GET(); i++) {
+			//printf("/");	//임시###############################
+			fread(&targetUser, sizeof(user_info), 1, userData);
+			if (strSame(targetUser->id, _Id) || userData == EOF)
+				break;
+		}
+		// 파일안에 원하는 _Id가 없다(NULL)
+		if (userData == EOF) {
+			//printf("[user_DB_GET][userControl.h][ ERROR ] there is no \"%s\"\n", _Id);
+			fclose(userData);
+			return NULL;
+		}
+		else {
+			fclose(userData);
+			// 파일 안에 원하는 _Id가 있다
+			if (strSame(_Id, targetUser->id)) {
+				//printf("[user_DB_GET][userControl.h][ EoF ] there is %s", _Id);
+				return &targetUser;
+			} else {
+				//printf("[user_DB_GET][userControl.h][ ERROR ] \"%s\" isn't have any %s\n", USER_INFO_FILE,_Id);
+				return NULL;
+			}
+		}
+	}
+}
+
+
+
+
+
+
+
+
+12/04
+
+void userRank_write(const char* _Id, const char* _Nickname) {
+	FILE* userRank_file = fopen(USER_RANK_FILE, "ab");
+	unit_rank newBest = { 0, };
+
+	strcpy(newBest.id, _Id);
+	strcpy(newBest.nickname, _Nickname);
+	strcpy(newBest.best.endTime, _NoneRecord);
+	newBest.best.record = 0;
+
+	fwrite(&newBest, sizeof(unit_rank), 1, userRank_file);
+	fclose(userRank_file);
+}
+
+void userRank_refre(const char* _Id) {
+	//userHistory_get(_Id)->best.record
+	unit_rank changeHis = { 0, };
+	changeHis.best.record = userHistory_get(_Id)->best.record;
+	strcpy(changeHis.id, userHistory_get(_Id)->id);
+	strcpy(changeHis.nickname, userHistory_get(_Id)->nickname);
+
+	FILE* userRank_file = fopen(USER_RANK_FILE, "rb");
+	if (NULL == userRank_file) {
+		printf("[userRank_modify][userControl.h][ERROR]there is no {USER}s\n");
+		fclose(userRank_file);
+		return;
+	}
+	else {
+		int target_unitRank = 0;
+
+		// 전체 다 불러오기
+		long population = userPopulation_get();
+		unit_rank* rankTotal = calloc(population, sizeof(unit_rank));
+		for (target_unitRank = 0; target_unitRank <  population; target_unitRank++)
+			fread((rankTotal + target_unitRank), sizeof(unit_rank), 1, userRank_file);
+		fclose(userRank_file);
+
+		// 바꿀자리확인
+		for (target_unitRank = 0; target_unitRank < population; target_unitRank++)
+			if (strSame(rankTotal[target_unitRank].id, _Id))
+				break;
+
+		// 바꾸기
+		userRank_file = fopen(USER_RANK_FILE, "wb");
+		for (int i = 0; i < population; i++) {
+			if (i == target_unitRank) {
+				fwrite(&changeBest, sizeof(user_info), 1, userRank_file);
+				continue;
+			}
+			fwrite((rankTotal + i), sizeof(user_info), 1, userRank_file);
+		}
+
+		free(rankTotal);
+		fclose(userRank_file);
+	}
+
+}
+
+void userRank_totalGet(void) {
+	long population = userPopulation_get();
+
+	FILE* user_id_file = fopen(USER_PASSWORD_FILE, "rb");
+	if (0 == population) {
+		printf("[userRank_get][userControl.h][ERROR]there is no {USER}s\n");
+		fclose(user_id_file);
+		return;
+	}
+	else {
+	
+	}
+}
