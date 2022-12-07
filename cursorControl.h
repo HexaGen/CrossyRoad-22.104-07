@@ -60,12 +60,3 @@ void deleteConsoleLine(int _Lines) {
 void cursorMove_abs(int row, int col) {
 	printf(CSI"%d;%dH", row, col);
 }
-void cursorMove(int row, int col) {
-	char rowShift = DOWN;
-	char colShift = RIGHT;
-	if (row < 0)
-		rowShift = UP;
-	if (col < 0)
-		colShift = LEFT;
-	printf(CSI"%d%c", abs(row), rowShift); printf(CSI"%d%c", abs(col), colShift);
-}

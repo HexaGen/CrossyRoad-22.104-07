@@ -19,8 +19,8 @@
 
 //파일경로
 #define USER_PASSWORD_FILE "data/.pw"
-#define USER_INFO_FILE "data/user.data"
-#define USER_RANK_FILE "data/.ranking"
+#define USER_INFO_FILE "data/User.data"
+#define USER_RANK_FILE "data/.rankings"
 
 #define USER_HISTORY_FILE "data/user_history/"
 
@@ -31,7 +31,7 @@ typedef struct __password__ {
 	char password[USER_PASSWORD_MAX];
 } user_password;
 
-/* user.data
+/* newUser.data
 * (STR) user_info.id[32 + 1] : {user_input} , ### notAllowChar, specialChar, ' ', ENGChar ###
 * (STR) user_info.nickname[32 + 1] : {user_input} , ### NOT allow specialChar, ' ' ###
 * (unsigned int) user_info.wallet[4] : 0 , 기본 자금은 0
@@ -65,7 +65,7 @@ typedef struct __unitRank__ {
 
 typedef struct __rank__ {
 	unit_rank user[10];
-}user_rank;
+}user_ranks;
 
 // 문자열함수에서 쓰기 위한 변수
 // 놀랍게도 NULL == 0 이므로, strchr 사용시  문자열 맨앞에 ' '을 넣어 준다.
@@ -366,6 +366,7 @@ void userHistory_append(const char* _Id, unit_record newData) {
 	}
 }
 
+//for debug
 void userHistory_print(const char* _Id, const char* _Mode) {
 	char* history_file_path[HISTORY_ROUTE_SIZE] = { 0, };
 	userHistory_route(history_file_path, _Id);
@@ -401,8 +402,93 @@ void userHistory_print(const char* _Id, const char* _Mode) {
 //	#########################################################
 //	RANKING
 //	#########################################################
+//char* _NoneRecord = "####/##/## - ##:##:##";
+user_ranks* userRank_get(void) {
+	FILE* userRank_file = fopen(USER_RANK_FILE, "rb");
+	if (NULL == userRank_file) {
+		printf("[userRank_get][userControl.h] there is no \"%s\", it will make now", USER_RANK_FILE);
+		unit_rank space = {
+			".",".",{"####/##/## - ##:##:##",0}
+		};
+		user_ranks init_rank = {
+			space ,space ,space ,space ,space,
+			space ,space ,space ,space ,space
+		};
+		userRank_file = fopen(USER_RANK_FILE, "wb");
+		fwrite(&init_rank, sizeof(user_ranks), 1, userRank_file);
+		printf("%s", init_rank.user->best.endTime);
+		fclose(userRank_file);
+		return &init_rank;
+	}
+	else {
+		user_ranks rankings = { 0, };
+		fread(&rankings, sizeof(user_ranks), 1, userRank_file);
+		fclose(userRank_file);
+		return &rankings;
+	}
+
+}
+
+void userRank_write(const char* _Id,const unsigned int record) {
+	unit_rank newBest_data = { 0, };
+	strcpy(newBest_data.id, userInfo_get(_Id)->id);
+	strcpy(newBest_data.nickname, userInfo_get(_Id)->nickname);
+	strcpy(newBest_data.best.endTime, "####/##/## - ##:##:##");
+	newBest_data.best.record = record;
+
+	if (NULL == userRank_get())
+	{
+		printf("[userRank_write][userControl.h] there is no \"%s\", it will make now", USER_RANK_FILE);
+		unit_rank space = {
+			".",".",{"####/##/## - ##:##:##",0}
+		};
+		user_ranks newRank_data = {
+			newBest_data, space, space, space, space,
+			       space, space, space, space, space
+		};
+
+		FILE* newRank_filePointer = fopen(USER_RANK_FILE, "wb");
+		fwrite(&newRank_data, sizeof(user_ranks), 1, newRank_filePointer);
+		fclose(newRank_filePointer);
+		return;
+	}
+	else
+	{
+		user_ranks rankings = *userRank_get();
+		// 바꿀자리(index) 확인
+		int targetIndex = 0;
+		for (targetIndex = 0; targetIndex <= 10; targetIndex++) {
+			if (targetIndex == 10)
+				break;
+			if (newBest_data.best.record >= rankings.user[targetIndex].best.record) {
+
+			}
+				break;
+		}
+		//바꾸기
+		if (targetIndex != 10) {
+			for (int i = 10-1; i > targetIndex; i--) {
+				strcpy(rankings.user[i].id, rankings.user[i-1].id);
+				strcpy(rankings.user[i].nickname, rankings.user[i-1].nickname);
+				strcpy(rankings.user[i].best.endTime, rankings.user[i-1].best.endTime);
+				rankings.user[i].best.record = rankings.user[i-1].best.record;
+			}
+			strcpy(rankings.user[targetIndex].id, newBest_data.id);
+			strcpy(rankings.user[targetIndex].nickname, newBest_data.nickname);
+			strcpy(rankings.user[targetIndex].best.endTime, newBest_data.best.endTime);
+			rankings.user[targetIndex].best.record = newBest_data.best.record;
+		}
+
+		FILE* userRank_file = fopen(USER_RANK_FILE, "wb");
+		fwrite(&rankings, sizeof(user_ranks), 1, userRank_file);
+		fclose(userRank_file);
+		return;
+	}
+}
 
 
+/*
+*/
 
 
 //	#########################################################

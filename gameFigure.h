@@ -133,7 +133,6 @@ Map_CTRL Map_objMove(Element _Player, Element element, bool* gameOver) {
 	// 위치변경
 	if (vel_SET[5] != 0) {
 		if (Map_reduced[player_pos.row][player_pos.col - vel_SET[5]] == element) {
-			//printf("gameOver");
 			*gameOver = true; // End of Game
 		}
 		Map_reduced[player_pos.row][player_pos.col] = obj_route;
@@ -214,7 +213,6 @@ void Player_move
 			if (Player_interact(keyInput, playerLocal, obj_train))
 				Map_reduced[player_pos.row][player_pos.col] = obj_train;
 
-
 			player_pos.col += directionVector(keyInput);
 			Map_reduced[player_pos.row][player_pos.col] = _Player;
 
@@ -234,7 +232,7 @@ void Player_move
 		}
 		else
 		{
-			return false;
+			return;
 		}
 
 	}
