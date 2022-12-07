@@ -26,15 +26,12 @@ void exitMain(void);
 
 void innerMain(const char* _Id);
 void rankingMain(const char* _Id);
-void gotchaMain(const char* _Id);
 void profileMain(const char* _Id);
 void gameMain(const char* _Id);
 
 const unsigned int gotchaCost = 500;
 void gotchaStart(_Id);
 void history_print(user_history, int, int, int);
-
-void DEBUG_MAIN(void);
 
 int main(void) {
 	srand((unsigned int)time(NULL));
@@ -218,7 +215,6 @@ void registerationMain(void) {
 	titleMain();
 }
 
-
 void innerMain(const char* _Id) {
 	cursorMove_abs(0, 0);
 	cursorDisplay("hide");
@@ -251,12 +247,9 @@ void innerMain(const char* _Id) {
 				rankingMain(_Id);
 				break;
 			case 2:
-				gotchaMain(_Id);
-				break;
-			case 3:
 				profileMain(_Id);
 				break;
-			case 4:
+			case 3:
 				main();
 			}
 		}
@@ -278,9 +271,60 @@ void gameMain(const char* _Id) {
 	gameStart(_Id);
 	system("cls");
 	system("mode con cols=120 lines=30");
+	Sleep(30);
 	innerMain(_Id);
 }
 
+//void rankingMain(const char* _Id) {
+//	system("cls");
+//	cursorDisplay("hide");
+//	layout_rank();
+//	/*
+//	{
+//		txtDesign(_Italic, _Yellow, _Blue);
+//		printf("[rankingMain][mainSpace.c][ initCheck ] ID : %s", _Id);
+//		txt_allReset();
+//		_getch();
+//		deleteConsoleLine(2);
+//	}
+//	*/
+//	//char* str = timeStamp();
+//	printf("%4s │ %32s │ %-32s │ %s", "RANK", "ID", "NICKNAME", "SCORE");
+//
+//	user_ranks rankings = *userRank_get();
+//	for (int i = 0; i < 10; i++) {
+//		cursorMove_abs(3 + (i+1) * 2, 5);
+//		printf(" %02d  │ %32s │ %-32s │ %u", i+1, rankings.user[i].id, rankings.user[i].nickname, rankings.user[i].best.record);
+//		Sleep(25);
+//	}
+//
+//	cursorMove_abs(26, 5);
+//	user_history user_record = *userHistory_get(_Id);
+//	if (0 != user_record.best.record)
+//		printf("MY BEST SCORE is '%d' (at %s )", user_record.best.record, user_record.best.endTime);
+//	else
+//		printf("YOU NEED TO PLAY A GAME for RECORD YOUR BEST SCORE");
+//
+//	unsigned int currentButton = 0;
+//
+//	bool NEXT = false;
+//	while (true) {
+//		cursorMove_abs(0, 7);
+//		rankingMainButton(currentButton);
+//		buttonState(&currentButton, 1, &NEXT);
+//		if (NEXT) {
+//			//cursorDisplay("reveal");
+//			switch (currentButton)
+//			{
+//			case 0:
+//				system("cls");
+//				innerMain(_Id);
+//			}
+//		}
+//	}
+//
+//	innerMain(_Id);
+//}
 void rankingMain(const char* _Id) {
 	system("cls");
 	cursorDisplay("hide");
@@ -299,8 +343,8 @@ void rankingMain(const char* _Id) {
 
 	user_ranks rankings = *userRank_get();
 	for (int i = 0; i < 10; i++) {
-		cursorMove_abs(3 + (i+1) * 2, 5);
-		printf(" %02d  │ %32s │ %-32s │ %u", i+1, rankings.user[i].id, rankings.user[i].nickname, rankings.user[i].best.record);
+		cursorMove_abs(3 + (i + 1) * 2, 5);
+		printf(" %02d  │ %32s │ %-32s │ %u", i + 1, rankings.user[i].id, rankings.user[i].nickname, rankings.user[i].best.record);
 		Sleep(25);
 	}
 
@@ -330,53 +374,6 @@ void rankingMain(const char* _Id) {
 	}
 
 	innerMain(_Id);
-}
-
-void gotchaMain(const char* _Id) {
-	system("cls");
-	system("mode con cols=72 lines=30");
-	cursorDisplay("hide");
-	/*
-	{
-		txtDesign(_Italic, _Yellow, _Blue);
-		printf("[gotchaMain][mainSpace.c][ initCheck ] ID : %s", _Id);
-		txt_allReset();
-		_getch();
-		cursorMove_abs(0, 0);
-		deleteConsoleLine(1);
-	}
-	//userInfo_print(_Id);
-	//_getch();
-	*/
-	layout_gotcha();
-	user_info targetUser = *userInfo_get(_Id);
-
-	cursorMove_abs(16, 7);
-	printf("반가워요 %s 님", targetUser.nickname);
-	cursorMove_abs(17, 7);
-	printf("[wallet : %-16u]", targetUser.wallet);
-
-	unsigned int currentButton = 0;
-	bool NEXT = false;
-
-	while (true) {
-		cursorMove_abs(0, 7);
-		gotchaMainButton(currentButton);
-		buttonState(&currentButton, GOTCHA_TOTAL_BUTTON, &NEXT);
-		if (NEXT) {
-			switch (currentButton)
-			{
-			case 0:
-				gotchaStart(_Id);
-				NEXT = false;
-				break;
-			case 1:
-				system("mode con cols=120 lines=30");
-				innerMain(_Id);
-				break;
-			}
-		}
-	}
 }
 
 void history_print(user_history hist,int now_index,int row, int col) {
@@ -463,9 +460,6 @@ void profileMain(const char* _Id) {
 				continue;
 			}
 			else if (2 == currentButton) {
-
-			}
-			else if (3 == currentButton) {
 				system("cls");
 				innerMain(_Id);
 				break;
@@ -474,158 +468,4 @@ void profileMain(const char* _Id) {
 	}
 	system("cls");
 	innerMain(_Id);
-}
-
-//x86 에서만 돌아감
-void gotchaStart(const char* _Id) {
-	user_info targetUser = *userInfo_get(_Id);
-	cursorMove_abs(5, 7);
-	if (targetUser.wallet >= gotchaCost) {
-
-		printf("뽑기할래요?(y[Y]/n[N]) : ");
-		cursorDisplay("reveal");
-		char GOTCHA = getchar();
-		cursorDisplay("hide");
-		deleteConsoleLine(2);
-		//if (GOTCHA == '\n')
-		//	_getch();
-		if (GOTCHA == 'y' || GOTCHA == 'Y') {
-			// 비용지불
-			targetUser.wallet -= gotchaCost;
-			userInfo_modify(_Id, targetUser);
-			targetUser = *userInfo_get(_Id);
-
-			double randomNum = random();
-			int GOT_ITEM = 0;
-			if (.6 <= randomNum && randomNum < .75) {
-				GOT_ITEM = 1;
-			}
-			else if (.75 <= randomNum && randomNum < .85) {
-				GOT_ITEM = 2;
-			}
-			else if (.85 <= randomNum && randomNum < .95) {
-				GOT_ITEM = 3;
-			}
-			else if (.95 <= randomNum && randomNum < .975) {
-				GOT_ITEM = 4;
-			}
-			else if (.975 <= randomNum && randomNum < 1.) {
-				GOT_ITEM = 5;
-			}
-
-			//printf("%f, %d", randomNum, GOT_ITEM);
-
-			if (GOT_ITEM) {
-				if ('F' == targetUser.inventory[GOT_ITEM]) {
-					targetUser.inventory[GOT_ITEM] = 'T';
-					userInfo_modify(_Id, targetUser);
-					targetUser = *userInfo_get(_Id);
-
-					cursorMove_abs(5, 7);
-					printf("새로운캐릭터! 축하합니다~");
-					cursorMove_abs(17, 7);
-					printf("[wallet : %-16u]", targetUser.wallet);
-
-					Sleep(1250);
-				}
-				else if ('T' == targetUser.inventory[GOT_ITEM]) {
-					targetUser.wallet += 200;
-					userInfo_modify(_Id, targetUser);
-					targetUser = *userInfo_get(_Id);
-
-					cursorMove_abs(5, 7);
-					printf("중복이넹 (0.<)9 - ☆");
-					cursorMove_abs(17, 7);
-					printf("[wallet : %-16u]", targetUser.wallet);
-
-					Sleep(1250);
-				}
-				gotchaMain(_Id);
-				return;
-			}
-			else {
-				targetUser.wallet += 50;
-				userInfo_modify(_Id, targetUser);
-				targetUser = *userInfo_get(_Id);
-
-				cursorMove_abs(5, 7);
-				printf("아무것도 뽑지 못했습니다 ㅠ,ㅠ");
-				cursorMove_abs(17, 7);
-				printf("[wallet : %-16u]", targetUser.wallet);
-
-				Sleep(1250);
-			}
-			gotchaMain(_Id);
-			return;
-		}
-		else {
-			gotchaMain(_Id);
-			return;
-		}
-	}
-	else {
-		cursorMove_abs(5, 7);
-		printf("뽑기에 필요한 비용(%u)이 부족합니다.", gotchaCost);
-		Sleep(1250);
-
-		cursorMove_abs(9, 7);
-		printf("다음에 와주세요!   :]");
-		Sleep(850);
-
-		system("mode con cols=120 lines=30");
-		innerMain(_Id);
-	}
-}
-
-
-
-
-void DEBUG_MAIN(void) {
-	//innerMain("test");
-	//gameMain("testlow");
-	if (NULL == userInfo_get("test") || userInfo_get("test")->wallet <= 1000) {
-		userInfo_write("test", "TEST_ACCOUNT");
-		userPW_write("test", "q1Q!");
-		userHistory_write("test", "TEST_ACCOUNT");
-		//userRank_write("test", "TEST_ACCOUNT");
-
-		user_info test_account = *userInfo_get("test");
-		test_account.wallet = 500000;
-		userInfo_modify("test", test_account);
-	}
-	if (NULL == userInfo_get("testlow")) {
-		userInfo_write("testlow", "TEST_ACCOUNT_LOW");
-		userPW_write("testlow", "q1Q!");
-		userHistory_write("testlow", "TEST_ACCOUNT_LOW");
-		//userRank_write("testlow", "TEST_ACCOUNT_LOW");
-
-		user_info test_account = *userInfo_get("testlow");
-		test_account.wallet = 0;
-		userInfo_modify("testlow", test_account);
-		userInfo_print("testlow");
-	}
-	char* _Id = "test";
-	unit_record nd0 = {0,};
-	strcpy(nd0.endTime, timeStamp());
-	nd0.record = 12;
-	userHistory_append(_Id, nd0);
-	Sleep(50);
-	userHistory_print(_Id, "total");
-
-	unit_record nd1 = { 0, };
-	strcpy(nd1.endTime, timeStamp());
-	nd1.record = 10;
-	Sleep(50);
-	userHistory_append(_Id, nd1);
-	userHistory_print(_Id, "total");
-
-	unit_record nd2 = { 0, };
-	strcpy(nd2.endTime, timeStamp());
-	nd2.record = 40;
-	userHistory_append(_Id, nd2);
-	userHistory_print(_Id, "total");
-
-	_getch();
-	/*
-	*/
 }

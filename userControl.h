@@ -259,33 +259,6 @@ void userInfo_modify(const char* _Id, user_info changedData) {
 	}
 }
 
-// _Id 에 해당하는 유저의 정보를 출력
-void userInfo_print(const char* _Id) {
-	FILE* userData = fopen(USER_INFO_FILE, "rb");
-	user_info* targetId = userInfo_get(_Id);	// _Id가 파일에 없으면, NULL
-	if (NULL == targetId) {
-		printf("[userInfo_get][userControl.h][ ERROR ] there is noting in \"%s\"\n", USER_INFO_FILE);
-		return;
-	}
-	else {
-		user_info targetUser = (*targetId);
-		printf("%s", targetUser.nickname);
-		printf("[ ID : %s ]", targetUser.id);
-		printf("[wallet = $%u]", targetUser.wallet);
-		printf("[currentInvenState : %u]\n", targetUser.currentInven);
-
-		printf("[\n ");
-		for (int i = 0; i < USER_INVENTORY_SIZE; i++) {
-			if (i % 4 == 0)
-				printf("\n ");
-			printf("[%2d]%d, ", i, targetUser.inventory[i]);
-		}
-		printf("\b\b \n]\n");
-
-	}
-}
-
-
 // #########################################################
 //파일 유저히스토리
 // #########################################################
@@ -366,39 +339,6 @@ void userHistory_append(const char* _Id, unit_record newData) {
 	}
 }
 
-//for debug
-void userHistory_print(const char* _Id, const char* _Mode) {
-	char* history_file_path[HISTORY_ROUTE_SIZE] = { 0, };
-	userHistory_route(history_file_path, _Id);
-
-	FILE* historyFile = fopen(history_file_path, "rb");
-	user_history* targetHistory = userHistory_get(_Id);
-	fclose(historyFile);
-	if (NULL == targetHistory) {
-		printf("[userHistory_print][userControl.h][ ERROR ] there is no \"%s\" in \"%s\"\n", _Id, USER_INFO_FILE);
-		return;
-	}
-	else {
-		printf("[USER] %s (ID : %s)\n", (*targetHistory).nickname, (*targetHistory).id);
-		if ("total" == _Mode) {
-			for (int i = 0; i < USER_HISTORY_MAX; i++) {
-				printf("[%2d][%s] %d\n", i, (*targetHistory).total[i].endTime, (*targetHistory).total[i].record);
-			}
-		}
-		else if ("best" == _Mode) {
-			printf("[best][%s] %d\n", (*targetHistory).best.endTime, (*targetHistory).best.record);
-		}
-		else {	// total + best
-			for (int i = 0; i < USER_HISTORY_MAX; i++) {
-				printf("[%2d][%s] %d\n", i, (*targetHistory).total[i].endTime, (*targetHistory).total[i].record);
-			}
-			printf("\n");
-			printf("[%s] %d\n", (*targetHistory).best.endTime, (*targetHistory).best.record);
-		}
-	}
-}
-
-
 //	#########################################################
 //	RANKING
 //	#########################################################
@@ -461,10 +401,10 @@ void userRank_write(const char* _Id,const unsigned int record) {
 			if (targetIndex == 10)
 				break;
 			if (newBest_data.best.record >= rankings.user[targetIndex].best.record) {
-
-			}
 				break;
+			}
 		}
+		printf("%d", targetIndex);
 		//바꾸기
 		if (targetIndex != 10) {
 			for (int i = 10-1; i > targetIndex; i--) {
@@ -485,11 +425,6 @@ void userRank_write(const char* _Id,const unsigned int record) {
 		return;
 	}
 }
-
-
-/*
-*/
-
 
 //	#########################################################
 //	입력 ID,NICK,PW
@@ -613,27 +548,4 @@ char* userInput_pw(const char* pw_title) {
 		pwLength++;
 	}
 	return NULL;
-}
-
-
-// #########################################################
-// DEBUG
-// #########################################################
-
-void debugALL() {
-	printf("[debugALL][userControl.h][ EoF ] total_user = %d\n", userPopulation_get());
-	FILE* userData = fopen(USER_INFO_FILE, "rb");
-	user_info targetUser = { 0, };
-	if (NULL == userData) {
-		printf("[debugALL][userControl.h][ ERROR ] there is noting in \"%s\"\n", USER_INFO_FILE);
-		return;
-	}
-	else {
-		printf("[debugALL][userControl.h]");
-		for (int i = 0; i < userPopulation_get(); i++) {
-			fread(&targetUser, sizeof(user_info), 1, userData);
-			printf("[%d]%s,", i, targetUser.id);
-		}
-		printf("\b \n");
-	}
 }

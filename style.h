@@ -5,9 +5,8 @@
 #define LOGO_HEIGTH 24
 
 #define TITLE_TOTAL_BUTTON 3
-#define GAME_TOTAL_BUTTON 5
-#define GOTCHA_TOTAL_BUTTON 2
-#define PROFILE_TOTAL_BUTTON 4
+#define GAME_TOTAL_BUTTON 4
+#define PROFILE_TOTAL_BUTTON 3
 
 //console MAX 120
 //사분위수(IQR) 기준으로 작성함
@@ -255,7 +254,6 @@ void buttonState(unsigned int* _Controller, const unsigned int _MAX, bool* NEXT)
 }
 
 void titleMainButton(const unsigned int _type) {
-	//printf("[titleButton]\n");
 	if (0 == _type) {
 		printf("%s", alignSpace_Q1p5);
 		txtDesign(_Bold, _Black, _White);
@@ -292,26 +290,18 @@ void titleMainButton(const unsigned int _type) {
 		unitButton("exit        ", true);
 		txt_allReset(); putchar('\n');
 	}
-	//printf("[titleButton-End]");
 }
 
 void gameMainButton(const unsigned int _type) {
-	//printf("[titleButton]\n");
-	char* align = "                  ";
+	char* align = "                          ";
 	if (0 == _type) {
 		printf("%s", align);
 		txtDesign(_Bold, _Black, _White);
 		unitButton("GameStart   ", true);
 		txt_allReset();
-		//putchar('\n');
 
-		//printf("%s", alignSpace_Q1p5);
 		unitButton("Ranking     ", false);
-		//printf("%s", alignSpace_Q1p5);
-		unitButton("Gotcha      ", false);
-		//printf("%s", alignSpace_Q1p5);
 		unitButton("Profile     ", false);
-		//printf("%s", alignSpace_Q1p5);
 		unitButton("Logout      \n", false);
 
 	}
@@ -319,94 +309,41 @@ void gameMainButton(const unsigned int _type) {
 		printf("%s", align);
 		unitButton("GameStart   ", false);
 
-		//printf("%s", alignSpace_Q1p5);
 		txtDesign(_Bold, _Black, _White);
 		unitButton("Ranking     ", true);
 		txt_allReset();
-		//putchar('\n');
 
-		//printf("%s", alignSpace_Q1p5);
-		unitButton("Gotcha      ", false);
-		//printf("%s", alignSpace_Q1p5);
 		unitButton("Profile     ", false);
-		//printf("%s", alignSpace_Q1p5);
 		unitButton("Logout      \n", false);
 	}
 	else if (2 == _type) {
 		printf("%s", align);
 		unitButton("GameStart   ", false);
-		//printf("%s", alignSpace_Q1p5);
 		unitButton("Ranking     ", false);
 
-		//printf("%s", alignSpace_Q1p5);
 		txtDesign(_Bold, _Black, _White);
-		unitButton("Gotcha      ", true);
+		unitButton("Profile     ", true);
 		txt_allReset();
-		//putchar('\n');
 
-		//printf("%s", alignSpace_Q1p5);
-		unitButton("Profile     ", false);
-		//printf("%s", alignSpace_Q1p5);
 		unitButton("Logout      \n", false);
 	}
 	else if (3 == _type) {
 		printf("%s", align);
 		unitButton("GameStart   ", false);
 		unitButton("Ranking     ", false);
-		//printf("%s", alignSpace_Q1p5);
-		unitButton("Gotcha      ", false);
-		//printf("%s", alignSpace_Q1p5);
-
-		//printf("%s", alignSpace_Q1p5);
-		txtDesign(_Bold, _Black, _White);
-		unitButton("Profile     ", true);
-		txt_allReset();
-		//putchar('\n');
-
-		//printf("%s", alignSpace_Q1p5);
-		unitButton("Logout      \n", false);
-	}
-	else if (4 == _type) {
-		printf("%s", align);
-		unitButton("GameStart   ", false);
-		//printf("%s", alignSpace_Q1p5);
-		unitButton("Ranking     ", false);
-		//printf("%s", alignSpace_Q1p5);
-		unitButton("Gotcha      ", false);
-		//printf("%s", alignSpace_Q1p5);
 		unitButton("Profile     ", false);
 
-		//printf("%s", alignSpace_Q1p5);
 		txtDesign(_Bold, _Black, _White);
 		unitButton("Logout      ", true);
 		txt_allReset(); putchar('\n');
 	}
-	//printf("[titleButton-End]");
 }
 
 void rankingMainButton(const unsigned int _type) {
 	if (0 == _type) {
-		//printf("%s", alignSpace_Q1p5);
 		txtDesign(_Bold, _Black, _White);
 		unitButton("Back        ", true);
 		txt_allReset(); putchar('\n');
-	}
-}
-
-void gotchaMainButton(const unsigned int _type) {
-	if (0 == _type) {
-		txtDesign(_Bold, _Black, _White);
-		unitButton("GOTCHA!     ", true);
-		txt_allReset();
-
-		unitButton("Back        ", false);
-	}
-	else if (1 == _type) {
-		unitButton("GOTCHA!     ", false);
-
-		txtDesign(_Bold, _Black, _White);
-		unitButton("Back        ", true);
-		txt_allReset();
 	}
 }
 
@@ -418,9 +355,7 @@ void profileMainButton(const unsigned int _type) {
 		txt_allReset();
 		unitButton("NextPage    ", false);
 
-		unitButton("Select Char ", false);
 		unitButton("Back        ", false);
-		//putchar('\n');
 	}
 	else if (1 == _type) {
 		unitButton("PrevPage    ", false);
@@ -429,29 +364,15 @@ void profileMainButton(const unsigned int _type) {
 		unitButton("NextPage    ", true);
 		txt_allReset();
 
-		unitButton("Select Char ", false);
 		unitButton("Back        ", false);
-		//putchar('\n');
 	}
+
 	else if (2 == _type) {
 		unitButton("PrevPage    ", false);
 		unitButton("NextPage    ", false);
 
 		txtDesign(_Bold, _Black, _White);
-		unitButton("Select Char ", true);
-		txt_allReset();
-
-		unitButton("Back        ", false);
-		//putchar('\n');
-	}
-	else if (3 == _type) {
-		unitButton("PrevPage    ", false);
-		unitButton("NextPage    ", false);
-		unitButton("Select Char ", false);
-
-		txtDesign(_Bold, _Black, _White);
 		unitButton("Back        ", true);
 		txt_allReset();
-		//putchar('\n');
 	}
 }

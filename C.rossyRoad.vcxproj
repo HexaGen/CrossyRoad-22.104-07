@@ -137,7 +137,6 @@
     <ClInclude Include="gameTerms.h" />
     <ClInclude Include="style.h" />
     <ClInclude Include="userControl.h" />
-    <ClInclude Include="userControl_demo.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Codetemp.txt" />
