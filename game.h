@@ -55,11 +55,13 @@ void gameStart(const char* _Id) {
 		record.record = score;
 		char* endTime = timeStamp();
 		strcpy(record.endTime, endTime);
-		userHistory_append(_Id, record);		// 기록 갱신
-		
-		user_history his = *userHistory_get(_Id);
-		userRank_write(_Id, his.best.record);	// 랭크갱신
 
+		user_history his = *userHistory_get(_Id);
+		if (his.best.record < score) {
+			userRank_write(_Id, score);	// 랭크갱신
+		}
+
+		userHistory_append(_Id, record);		// 기록 갱신
 		
 		cursorMove_abs(17, 8);	printf("%s", endTime);			// 끝난 시각,점수 확인용
 		cursorMove_abs(18, 8);	printf("Score : %u", score);

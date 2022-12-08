@@ -179,7 +179,7 @@ void layout_game(void) {
 	printf("┐ │\n");
 
 
-	for (i = 0; i < 25; i++) printf("│ │%44s│ │\n", "");
+	for (i = 0; i < 24; i++) printf("│ │%44s│ │\n", "");
 
 
 	//내부 마지막 줄
