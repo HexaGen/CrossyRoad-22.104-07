@@ -29,28 +29,11 @@ void rankingMain(const char* _Id);
 void profileMain(const char* _Id);
 void gameMain(const char* _Id);
 
-const unsigned int gotchaCost = 500;
-void gotchaStart(_Id);
 void history_print(user_history, int, int, int);
 
 int main(void) {
 	srand((unsigned int)time(NULL));
-	/*
-	debugALL();
-	//user_history user_record = *userHistory_get("1q1q");
-	user_history user_record = *userHistory_get("test");
-	//user_history user_record = *userHistory_get("testlow");
 
-	printf("[%s %u]\n\n", user_record.best.endTime, user_record.best.record);
-	//userRank_write(user_record.id, user_record.best.endTime, user_record.best.record);
-
-	user_ranks rankings = *userRank_get();
-	for (int i = 0; i < 10; i++) {
-		printf("\n[%d]%s(%s) - %u",i, rankings.user[i].id, rankings.user[i].nickname, rankings.user[i].best.record);
-
-	}
-	//gotchaMain("1q1q");
-	*/
 	cursorMove_abs(0, 0);
 	cursorDisplay("hide");
 	logoPrint(); printf("\n");
@@ -77,8 +60,6 @@ int main(void) {
 		}
 	}
 
-
-	
 	return 0;
 }
 
@@ -218,15 +199,6 @@ void registerationMain(void) {
 void innerMain(const char* _Id) {
 	cursorMove_abs(0, 0);
 	cursorDisplay("hide");
-	/*
-	{
-		txtDesign(_Italic, _Yellow, _Blue);
-		printf("[gameMain][mainSpace.c][initFunc] ID : %s", _Id);
-		_getch();
-		txt_allReset();
-		deleteConsoleLine(2);
-	}
-	*/
 
 	logoPrint(); printf("\n\n");
 
@@ -258,98 +230,30 @@ void innerMain(const char* _Id) {
 
 void gameMain(const char* _Id) {
 	cursorDisplay("hide");
-	/*
-	{
-		txtDesign(_Italic, _Yellow, _Blue);
-		printf("[gameMain][mainSpace.c][ initCheck ] ID : %s", _Id);
-		txt_allReset();
-		_getch();
-		system("cls");
-		//deleteConsoleLine(2);
-	}
-	*/
+
 	gameStart(_Id);
+
 	system("cls");
 	system("mode con cols=120 lines=30");
 	Sleep(30);
 	innerMain(_Id);
 }
 
-//void rankingMain(const char* _Id) {
-//	system("cls");
-//	cursorDisplay("hide");
-//	layout_rank();
-//	/*
-//	{
-//		txtDesign(_Italic, _Yellow, _Blue);
-//		printf("[rankingMain][mainSpace.c][ initCheck ] ID : %s", _Id);
-//		txt_allReset();
-//		_getch();
-//		deleteConsoleLine(2);
-//	}
-//	*/
-//	//char* str = timeStamp();
-//	printf("%4s ¦¢ %32s ¦¢ %-32s ¦¢ %s", "RANK", "ID", "NICKNAME", "SCORE");
-//
-//	user_ranks rankings = *userRank_get();
-//	for (int i = 0; i < 10; i++) {
-//		cursorMove_abs(3 + (i+1) * 2, 5);
-//		printf(" %02d  ¦¢ %32s ¦¢ %-32s ¦¢ %u", i+1, rankings.user[i].id, rankings.user[i].nickname, rankings.user[i].best.record);
-//		Sleep(25);
-//	}
-//
-//	cursorMove_abs(26, 5);
-//	user_history user_record = *userHistory_get(_Id);
-//	if (0 != user_record.best.record)
-//		printf("MY BEST SCORE is '%d' (at %s )", user_record.best.record, user_record.best.endTime);
-//	else
-//		printf("YOU NEED TO PLAY A GAME for RECORD YOUR BEST SCORE");
-//
-//	unsigned int currentButton = 0;
-//
-//	bool NEXT = false;
-//	while (true) {
-//		cursorMove_abs(0, 7);
-//		rankingMainButton(currentButton);
-//		buttonState(&currentButton, 1, &NEXT);
-//		if (NEXT) {
-//			//cursorDisplay("reveal");
-//			switch (currentButton)
-//			{
-//			case 0:
-//				system("cls");
-//				innerMain(_Id);
-//			}
-//		}
-//	}
-//
-//	innerMain(_Id);
-//}
 void rankingMain(const char* _Id) {
 	system("cls");
 	cursorDisplay("hide");
 	layout_rank();
-	/*
-	{
-		txtDesign(_Italic, _Yellow, _Blue);
-		printf("[rankingMain][mainSpace.c][ initCheck ] ID : %s", _Id);
-		txt_allReset();
-		_getch();
-		deleteConsoleLine(2);
-	}
-	*/
-	//char* str = timeStamp();
-	printf("%4s ¦¢ %32s ¦¢ %-32s ¦¢ %s", "RANK", "ID", "NICKNAME", "SCORE");
 
+		printf("%4s ¦¢ %32s ¦¢ %-32s ¦¢ %s", "RANK", "ID", "NICKNAME", "SCORE");
 	user_ranks rankings = *userRank_get();
 	for (int i = 0; i < 10; i++) {
-		cursorMove_abs(3 + (i + 1) * 2, 5);
-		printf(" %02d  ¦¢ %32s ¦¢ %-32s ¦¢ %u", i + 1, rankings.user[i].id, rankings.user[i].nickname, rankings.user[i].best.record);
+		cursorMove_abs(3 + (i+1) * 2, 5);
+		printf(" %02d  ¦¢ %32s ¦¢ %-32s ¦¢ %u", i+1, rankings.user[i].id, rankings.user[i].nickname, rankings.user[i].best.record);
 		Sleep(25);
 	}
 
-	cursorMove_abs(26, 5);
 	user_history user_record = *userHistory_get(_Id);
+	cursorMove_abs(26, 5);
 	if (0 != user_record.best.record)
 		printf("MY BEST SCORE is '%d' (at %s )", user_record.best.record, user_record.best.endTime);
 	else
@@ -363,7 +267,6 @@ void rankingMain(const char* _Id) {
 		rankingMainButton(currentButton);
 		buttonState(&currentButton, 1, &NEXT);
 		if (NEXT) {
-			//cursorDisplay("reveal");
 			switch (currentButton)
 			{
 			case 0:
@@ -420,11 +323,8 @@ void profileMain(const char* _Id) {
 	cursorDisplay("hide");
 
 	layout_profile();
-	cursorMove_abs(4, 18);
-	printf("%s", targetUser.nickname);
-
-	cursorMove_abs(6, 18);
-	printf("ID : %-32s", targetUser.id);
+	cursorMove_abs(4, 18); printf("%s", targetUser.nickname);
+	cursorMove_abs(6, 18); printf("ID : %-32s", targetUser.id);
 
 	char temp[50];
 	sprintf(temp, "%s    %d", user_record.best.endTime, user_record.best.record);
@@ -435,18 +335,14 @@ void profileMain(const char* _Id) {
 
 	history_print(user_record, 0, 13, 21);
 
-	//cursorMove_abs(0, 10);
-
 	unsigned int currentButton = 0;
 	unsigned int HIS_NEXT=0;
 	bool NEXT = false;
 	while (true) {
 		cursorMove_abs(0, 7);
-		//printf("%d", HIS_NEXT);
 		profileMainButton(currentButton);
 		buttonState(&currentButton, PROFILE_TOTAL_BUTTON, &NEXT);
 		if (NEXT) {
-			//cursorDisplay("reveal");
 			if (0 == currentButton) {
 				prevHistory(&HIS_NEXT);
 				history_print(user_record, HIS_NEXT, 13, 21);

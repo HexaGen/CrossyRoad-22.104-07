@@ -1,5 +1,10 @@
 #pragma once
 
+//#include <stdio.h>
+//#include <conio.h>
+//#include <malloc.h>
+//#include <string.h>
+//#include "extendedFunc.h"
 #include "style.h"
 
 //우리가 쓸 상수들
@@ -7,41 +12,27 @@
 #define USER_PASSWORD_MAX 32
 #define USER_ID_MAX 32
 #define USER_NICKNAME_MAX 32
-#define USER_INVENTORY_SIZE 6
 
 #define USER_HISTORY_MAX 40
-//sizeof(USER_HISTORY_FILE) - 1 + USER_ID_MAX + sizeof(".his")
 #define HISTORY_ROUTE_SIZE 54
 
-//값의 크기
-#define USER_DEFAULT_WALLET 0
-//#define USER_DEFAULT_INVENTORY "1000000000000000000000000000000000000000000000000000000"
 
 //파일경로
 #define USER_PASSWORD_FILE "data/.pw"
-#define USER_INFO_FILE "data/User.data"
+#define USER_INFO_FILE "data/user.data"
 #define USER_RANK_FILE "data/.rankings"
 
 #define USER_HISTORY_FILE "data/user_history/"
 
 // 파일저장에 쓰일 구조체
-// .pw
 typedef struct __password__ {
 	char id[USER_ID_MAX];
 	char password[USER_PASSWORD_MAX];
 } user_password;
 
-/* newUser.data
-* (STR) user_info.id[32 + 1] : {user_input} , ### notAllowChar, specialChar, ' ', ENGChar ###
-* (STR) user_info.nickname[32 + 1] : {user_input} , ### NOT allow specialChar, ' ' ###
-* (unsigned int) user_info.wallet[4] : 0 , 기본 자금은 0
-* (bool) user_info.inventory[64] : {true, false, false, ..., false, -1, -1, ..., -1}, ### 기본 캐릭터만 인벤토리에 있다. ###*/
 typedef struct __user__ {
 	char id[USER_ID_MAX];
 	char nickname[USER_NICKNAME_MAX];
-	unsigned char inventory[USER_INVENTORY_SIZE];
-	unsigned int currentInven;
-	unsigned int wallet;
 } user_info;
 
 //unit_record.endTime = "yyyy/mm/dd - hh:mm:ss" 21 + 1
@@ -114,7 +105,7 @@ bool checkCharType(const char c, const int _type) {
 long userPopulation_get() {
 	FILE* userPasswordData = fopen(USER_PASSWORD_FILE, "rb");
 	if (NULL == userPasswordData) {
-		printf("[userPopulation_get][userControl.h][ ERROR ] there is noting in \"%s\"\n", USER_PASSWORD_FILE);
+		//printf("[userPopulation_get][userControl.h][ ERROR ] there is noting in \"%s\"\n", USER_PASSWORD_FILE);
 		return 0;
 	}
 	else {
@@ -177,17 +168,6 @@ void userInfo_write(const char* _Id, const char* _Nickname) {
 	// 유저가 입력한 부분
 	strcpy(newUser.id, _Id);
 	strcpy(newUser.nickname, _Nickname);
-	// 기본값으로 초기화한 부분
-	newUser.wallet = 0;
-	newUser.currentInven = 0;
-	for (int i = 0; i < USER_INVENTORY_SIZE; i++) {
-		newUser.inventory[i] = 'F';
-		/*
-		printf("%d", newUser.inventory[i]);
-		if (i % 5 == 0) printf("\n");
-		*/
-	}
-	newUser.inventory[0] = 'T';
 
 	fwrite(&newUser, sizeof(user_info), 1, userData);
 	fclose(userData);
@@ -201,7 +181,7 @@ user_info* userInfo_get(const char* _Id) {
 	FILE* userData = fopen(USER_INFO_FILE, "rb");
 	user_info targetUser = { 0, };
 	if (NULL == userData) {
-		printf("[userInfo_get][userControl.h][ ERROR ] there is noting in \"%s\"\n", USER_INFO_FILE);
+		//printf("[userInfo_get][userControl.h][ ERROR ] there is noting in \"%s\"\n", USER_INFO_FILE);
 		return NULL;
 	}
 	else {
@@ -228,7 +208,7 @@ user_info* userInfo_get(const char* _Id) {
 // _Id에 해당하는 데이터를 targetUser로 바꾸기
 void userInfo_modify(const char* _Id, user_info changedData) {
 	int population = userPopulation_get(), targetData_index = 0;
-	user_info* originalData = calloc(population, sizeof(user_info));
+	user_info* originalData = calloc(sizeof(user_info), population);
 	if (NULL == userInfo_get(_Id)) {
 		printf("[userInfo_modify][userControl.h][ ERROR ] there is no \"%s\" in \"%s\"\n", _Id, USER_INFO_FILE);
 		return;
@@ -272,7 +252,7 @@ void userHistory_route(char* _Var, const char* _Id) {
 }
 
 void userHistory_write(const char* _Id, const char* _Nickname) {
-	char* history_file_path[HISTORY_ROUTE_SIZE] = { 0, };
+	char history_file_path[HISTORY_ROUTE_SIZE] = { 0, };
 	userHistory_route(history_file_path, _Id);
 	FILE* userHistory = fopen(history_file_path, "wb");
 
@@ -293,7 +273,7 @@ void userHistory_write(const char* _Id, const char* _Nickname) {
 }
 
 user_history* userHistory_get(const char* _Id) {
-	char* history_file_path[HISTORY_ROUTE_SIZE] = { 0, };
+	char history_file_path[HISTORY_ROUTE_SIZE] = { 0, };
 	userHistory_route(history_file_path, _Id);
 
 	FILE* historyFile = fopen(history_file_path, "rb");
@@ -310,7 +290,7 @@ user_history* userHistory_get(const char* _Id) {
 }
 
 void userHistory_append(const char* _Id, unit_record newData) {
-	char* history_file_path[HISTORY_ROUTE_SIZE] = { 0, };
+	char history_file_path[HISTORY_ROUTE_SIZE] = { 0, };
 	userHistory_route(history_file_path, _Id);
 
 	user_history* targetHistory = userHistory_get(_Id);
@@ -343,10 +323,11 @@ void userHistory_append(const char* _Id, unit_record newData) {
 //	RANKING
 //	#########################################################
 //char* _NoneRecord = "####/##/## - ##:##:##";
+
 user_ranks* userRank_get(void) {
 	FILE* userRank_file = fopen(USER_RANK_FILE, "rb");
 	if (NULL == userRank_file) {
-		printf("[userRank_get][userControl.h] there is no \"%s\", it will make now", USER_RANK_FILE);
+		//printf("[userRank_get][userControl.h] there is no \"%s\", it will make now", USER_RANK_FILE);
 		unit_rank space = {
 			".",".",{"####/##/## - ##:##:##",0}
 		};
@@ -378,7 +359,7 @@ void userRank_write(const char* _Id,const unsigned int record) {
 
 	if (NULL == userRank_get())
 	{
-		printf("[userRank_write][userControl.h] there is no \"%s\", it will make now", USER_RANK_FILE);
+		//printf("[userRank_write][userControl.h] there is no \"%s\", it will make now", USER_RANK_FILE);
 		unit_rank space = {
 			".",".",{"####/##/## - ##:##:##",0}
 		};
@@ -404,7 +385,6 @@ void userRank_write(const char* _Id,const unsigned int record) {
 				break;
 			}
 		}
-		printf("%d", targetIndex);
 		//바꾸기
 		if (targetIndex != 10) {
 			for (int i = 10-1; i > targetIndex; i--) {
@@ -430,21 +410,20 @@ void userRank_write(const char* _Id,const unsigned int record) {
 //	입력 ID,NICK,PW
 //	#########################################################
 
-// NULL == 취소
-char* userInput_id(const char* identity_type) {
+
+char* userInput_id(const char* identity_type) { // NULL == 취소
 	char* getUser_identity = (char*)calloc(sizeof(char), USER_ID_MAX);
 	char* result = getUser_identity;
 
-	printf("%s : ", identity_type);
+	printf("%-10s : ", identity_type);
 	int identityLength = 0;
 	while (1) {
-		// 입력받기
-		*getUser_identity = _getch();
-		// ESC 누르면 NULL
-		if (*getUser_identity == 27)
+		*getUser_identity = _getch();	// 입력받기
+		
+		if (*getUser_identity == 27)	// ESC 누르면 NULL
 			return NULL;
-		//한글입력방지
-		else if (!(0 <= *getUser_identity && *getUser_identity <= 127))
+		
+		else if (!(0 <= *getUser_identity && *getUser_identity <= 127))		//한글입력방지
 			continue;
 		if (identity_type == "ID" && checkCharType(*getUser_identity, 1))
 			continue;
@@ -459,8 +438,8 @@ char* userInput_id(const char* identity_type) {
 				return result;
 			}
 		}
-		// 글자 지우기
-		if (VK_BACK == *getUser_identity) {
+		
+		if (VK_BACK == *getUser_identity) {		// 글자 지우기
 			if (identityLength > 0) {
 				putchar(VK_BACK);
 				putchar(VK_SPACE);
@@ -474,10 +453,10 @@ char* userInput_id(const char* identity_type) {
 				continue;
 			}
 		}
-		// 글자 수가 31개이면 안쳐짐
-		if (USER_ID_MAX - 1 == identityLength)
+		
+		if (USER_ID_MAX - 1 == identityLength)		// 글자 수가 31개이면 안쳐짐
 			continue;
-		// 다음 위치 지정
+
 		putchar(*getUser_identity);
 		getUser_identity++;
 		identityLength++;
@@ -491,29 +470,27 @@ char* userInput_pw(const char* pw_title) {
 	//{ 대문자, 소문자, 숫자, 특수문자 }
 	bool CHAR[4] = { false, false ,false ,false };
 
-	printf("%s : ", pw_title);
+	printf("%-10s : ", pw_title);
 	int pwLength = 0;
-	while (1) {
-		// 입력받기
+	while (1) {		// 입력받기
 		*getUser_pw = _getch();
 
-		//한글입력방지
-		if (*getUser_pw == 27)
+		if (*getUser_pw == 27)	//한글입력방지
 			return NULL;
 		else if (!(0 <= *getUser_pw && *getUser_pw <= 127))
 			continue;
 		if (VK_SPACE == *getUser_pw && checkCharType(*getUser_pw, 5))
 			continue;
-		// PW_CONDITION = ({대문자, 소문자, 숫자, 특수문자 } 각각 적어도 하나는 있어야함)
-		// PW_CONDITION [CHECK]
+		// PW_CONDITION = ({대문자, 소문자, 숫자, 특수문자 } 각각 적어도 하나는 있어야함
 		for (int i = 1; i <= 4; i++) {
 			if (!CHAR[i - 1])
-				CHAR[i - 1] = checkCharType(*getUser_pw, i);
+				CHAR[i - 1] = checkCharType(*getUser_pw, i);	// PW_CONDITION [CHECK]
 		}
 
-		if (VK_RETURN == *getUser_pw) {
-			// PW_CONDITION 부합하지 않으면 [SKIP]
-			if (!((CHAR[0] && CHAR[1]) && (CHAR[2] && CHAR[3])))
+		if (VK_RETURN == *getUser_pw)
+		{
+			
+			if (!((CHAR[0] && CHAR[1]) && (CHAR[2] && CHAR[3])))	// PW_CONDITION 부합하지 않으면 [SKIP]
 				continue;
 			if (pwLength < 4) {
 				continue;
@@ -524,8 +501,9 @@ char* userInput_pw(const char* pw_title) {
 				return result;
 			}
 		}
-		// 글자 지우기
-		if (VK_BACK == *getUser_pw) {
+		
+		if (VK_BACK == *getUser_pw)		// 글자 지우기
+		{
 			if (pwLength > 0) {
 				putchar(VK_BACK);
 				putchar(VK_SPACE);
@@ -542,7 +520,6 @@ char* userInput_pw(const char* pw_title) {
 		if (USER_PASSWORD_MAX - 1 <= pwLength)
 			continue;
 
-		// 다음 위치 지정
 		putchar('*');
 		getUser_pw++;
 		pwLength++;

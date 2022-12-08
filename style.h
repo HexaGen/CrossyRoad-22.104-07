@@ -250,7 +250,6 @@ void buttonState(unsigned int* _Controller, const unsigned int _MAX, bool* NEXT)
 	else if ((key == 72 || key == 75) && (*_Controller) > 0) {
 		(*_Controller)--;
 	}
-	//printf("[1][%u %d %d]", *_Controller, _MAX, *_Controller < _MAX);
 }
 
 void titleMainButton(const unsigned int _type) {

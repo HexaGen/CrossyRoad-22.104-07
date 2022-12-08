@@ -14,7 +14,7 @@
 #define obj_route ' '
 #define obj_player_default '1'
 #define obj_car '@'					// 차
-#define obj_train '#'				// 기차
+#define obj_rail '#'				// 기차
 #define obj_barrier '&'				// 돌, 나무
 
 
@@ -41,10 +41,6 @@ typedef int Pos;
 
 typedef struct __position__ { int row; int col; }player_position;
 typedef struct __direct__ { char up[3]; char down[5]; char left[5]; char right[6]; } dim2Unit;
-
-Element* train_Rdirect = "[.....]-[.....]-[.....]-[.....[]";
-Element* train_Ldirect = "[].....]-[.....]-[.....]-[.....]";
-
 
 // 축소된 Map
 Map Map_reduced[Map_reduced_row][Map_reduced_col] = { 0, };

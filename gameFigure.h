@@ -45,7 +45,7 @@ Line* unitLine_genRand(void) {
 	else if (.5 <= num && num < .8)
 		return unitLine_gen(5. / 38, obj_barrier, obj_route);
 	else if (.8 <= num && num <= 1)
-		return unitLine_gen(1, obj_train, obj_route);
+		return unitLine_gen(1, obj_rail, obj_route);
 }
 
 ///	{Line_original}을 {_ShiftVect}만큼 '순환SHIFT'해줌
@@ -191,7 +191,7 @@ void Player_move
 	{
 		//printf("STAY");
 	}
-	else if (Player_interact(keyInput, playerLocal, _Route) || Player_interact(keyInput, playerLocal, obj_train))
+	else if (Player_interact(keyInput, playerLocal, _Route) || Player_interact(keyInput, playerLocal, obj_rail))
 	{
 
 		if (strSame(keyInput, unitVect.up))
@@ -210,8 +210,8 @@ void Player_move
 		else if (strSame(keyInput, unitVect.left))
 		{
 			Map_reduced[player_pos.row][player_pos.col] = _Route;
-			if (Player_interact(keyInput, playerLocal, obj_train))
-				Map_reduced[player_pos.row][player_pos.col] = obj_train;
+			if (Player_interact(keyInput, playerLocal, obj_rail))
+				Map_reduced[player_pos.row][player_pos.col] = obj_rail;
 
 			player_pos.col += directionVector(keyInput);
 			Map_reduced[player_pos.row][player_pos.col] = _Player;
@@ -221,8 +221,8 @@ void Player_move
 		else if (strSame(keyInput, unitVect.right))
 		{
 			Map_reduced[player_pos.row][player_pos.col] = _Route;
-			if (Player_interact(keyInput, playerLocal, obj_train))
-				Map_reduced[player_pos.row][player_pos.col] = obj_train;
+			if (Player_interact(keyInput, playerLocal, obj_rail))
+				Map_reduced[player_pos.row][player_pos.col] = obj_rail;
 
 
 			player_pos.col += directionVector(keyInput);
