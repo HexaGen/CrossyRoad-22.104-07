@@ -1,10 +1,5 @@
 #pragma once
 
-//#include <stdio.h>
-//#include <conio.h>
-//#include <malloc.h>
-//#include <string.h>
-//#include "extendedFunc.h"
 #include "style.h"
 
 //우리가 쓸 상수들
@@ -427,9 +422,9 @@ char* userInput_id(const char* identity_type) { // NULL == 취소
 			continue;
 		if (identity_type == "ID" && checkCharType(*getUser_identity, 1))
 			continue;
-		if (VK_SPACE == *getUser_identity || checkCharType(*getUser_identity, 4) || checkCharType(*getUser_identity, 5))
+		if (0x20 == *getUser_identity || checkCharType(*getUser_identity, 4) || checkCharType(*getUser_identity, 5))
 			continue;
-		if (VK_RETURN == *getUser_identity) {
+		if (0x0D == *getUser_identity) {
 			if (identityLength < 4)
 				continue;
 			else {
@@ -439,11 +434,11 @@ char* userInput_id(const char* identity_type) { // NULL == 취소
 			}
 		}
 		
-		if (VK_BACK == *getUser_identity) {		// 글자 지우기
+		if (0x08 == *getUser_identity) {		// 글자 지우기
 			if (identityLength > 0) {
-				putchar(VK_BACK);
-				putchar(VK_SPACE);
-				putchar(VK_BACK);
+				putchar(0x08);
+				putchar(0x20);
+				putchar(0x08);
 
 				*getUser_identity = '\0';
 				getUser_identity--; identityLength--;
@@ -479,7 +474,7 @@ char* userInput_pw(const char* pw_title) {
 			return NULL;
 		else if (!(0 <= *getUser_pw && *getUser_pw <= 127))
 			continue;
-		if (VK_SPACE == *getUser_pw && checkCharType(*getUser_pw, 5))
+		if (0x20 == *getUser_pw && checkCharType(*getUser_pw, 5))
 			continue;
 		// PW_CONDITION = ({대문자, 소문자, 숫자, 특수문자 } 각각 적어도 하나는 있어야함
 		for (int i = 1; i <= 4; i++) {
@@ -487,7 +482,7 @@ char* userInput_pw(const char* pw_title) {
 				CHAR[i - 1] = checkCharType(*getUser_pw, i);	// PW_CONDITION [CHECK]
 		}
 
-		if (VK_RETURN == *getUser_pw)
+		if (0x0D == *getUser_pw)
 		{
 			
 			if (!((CHAR[0] && CHAR[1]) && (CHAR[2] && CHAR[3])))	// PW_CONDITION 부합하지 않으면 [SKIP]
@@ -502,12 +497,12 @@ char* userInput_pw(const char* pw_title) {
 			}
 		}
 		
-		if (VK_BACK == *getUser_pw)		// 글자 지우기
+		if (0x08 == *getUser_pw)		// 글자 지우기
 		{
 			if (pwLength > 0) {
-				putchar(VK_BACK);
-				putchar(VK_SPACE);
-				putchar(VK_BACK);
+				putchar(0x08);
+				putchar(0x20);
+				putchar(0x08);
 
 				*getUser_pw = '\0';
 				getUser_pw--; pwLength--;

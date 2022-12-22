@@ -203,8 +203,10 @@ void logoPrint() {
 	}
 	else {
 		char logo[LOGO_HEIGTH][LOGO_WIDTH] = { 0, };
+		printf("\n");
 		for (int i = 0; i < LOGO_HEIGTH; i++) {
 			fgets(logo[i], LOGO_WIDTH + 1, logoFile);
+			printf("   ");
 			printf("%s", logo[i]);
 		}
 		printf("\n");
@@ -254,36 +256,36 @@ void buttonState(unsigned int* _Controller, const unsigned int _MAX, bool* NEXT)
 
 void titleMainButton(const unsigned int _type) {
 	if (0 == _type) {
-		printf("%s", alignSpace_Q1p5);
+		printf("       %s", alignSpace_Q1p5);
 		txtDesign(_Bold, _Black, _White);
 		unitButton("login       ", true);
 		txt_allReset(); putchar('\n');
 
-		printf("%s", alignSpace_Q1p5);
+		printf("       %s", alignSpace_Q1p5);
 		unitButton("register\n", false);
-		printf("%s", alignSpace_Q1p5);
+		printf("       %s", alignSpace_Q1p5);
 		unitButton("exit\n", false);
 	}
 	else if (1 == _type) {
-		printf("%s", alignSpace_Q1p5);
+		printf("       %s", alignSpace_Q1p5);
 		unitButton("login\n", false);
 
-		printf("%s", alignSpace_Q1p5);
+		printf("       %s", alignSpace_Q1p5);
 
 		txtDesign(_Bold, _Black, _White);
 		unitButton("register    ", true);
 		txt_allReset(); putchar('\n');
 
-		printf("%s", alignSpace_Q1p5);
+		printf("       %s", alignSpace_Q1p5);
 		unitButton("exit\n", false);
 	}
 	else if (2 == _type) {
-		printf("%s", alignSpace_Q1p5);
+		printf("       %s", alignSpace_Q1p5);
 		unitButton("login\n", false);
-		printf("%s", alignSpace_Q1p5);
+		printf("       %s", alignSpace_Q1p5);
 		unitButton("register\n", false);
 
-		printf("%s", alignSpace_Q1p5);
+		printf("       %s", alignSpace_Q1p5);
 
 		txtDesign(_Bold, _Black, _White);
 		unitButton("exit        ", true);
@@ -292,7 +294,7 @@ void titleMainButton(const unsigned int _type) {
 }
 
 void gameMainButton(const unsigned int _type) {
-	char* align = "                          ";
+	char* align = "                               ";
 	if (0 == _type) {
 		printf("%s", align);
 		txtDesign(_Bold, _Black, _White);

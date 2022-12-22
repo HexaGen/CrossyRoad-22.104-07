@@ -7,7 +7,6 @@
 #include <time.h>
 #include <string.h>
 #include <stdbool.h>
-#include <Windows.h>
 
 //USER UNIVERSAL
 #include "extendedFunc.h"
@@ -34,6 +33,7 @@ void history_print(user_history, int, int, int);
 int main(void) {
 	srand((unsigned int)time(NULL));
 
+	system("mode con cols=126 lines=30");
 	cursorMove_abs(0, 0);
 	cursorDisplay("hide");
 	logoPrint(); printf("\n");
@@ -234,7 +234,7 @@ void gameMain(const char* _Id) {
 	gameStart(_Id);
 
 	system("cls");
-	system("mode con cols=120 lines=30");
+	system("mode con cols=126 lines=30");
 	Sleep(30);
 	innerMain(_Id);
 }

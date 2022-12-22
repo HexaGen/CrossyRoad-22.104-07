@@ -120,10 +120,6 @@ Map_CTRL Map_down(Map map[Map_reduced_row][Map_reduced_col]) {
 
 /// {element}만 움직임.
 Map_CTRL Map_objMove(Element _Player, Element element, bool* gameOver) {
-	/*printf("Map_objMove");
-	for (int i = 0; i < Map_reduced_row; i++)
-		printf("[%d]", vel_SET[i]);*/
-
 	char playerLocal[4] = {
 		Map_reduced[player_pos.row + (-1)][player_pos.col],	//up
 		Map_reduced[player_pos.row + (+1)][player_pos.col],	//down
@@ -136,6 +132,8 @@ Map_CTRL Map_objMove(Element _Player, Element element, bool* gameOver) {
 			*gameOver = true; // End of Game
 		}
 		Map_reduced[player_pos.row][player_pos.col] = obj_route;
+		if (playerLocal[2] == playerLocal[3] && playerLocal[2] == obj_rail && playerLocal[3] == obj_rail)
+			Map_reduced[player_pos.row][player_pos.col] = obj_rail;
 		Map_reduced[player_pos.row][player_pos.col - vel_SET[5]] = _Player;
 	}
 	for (int i = 0; i < Map_reduced_row; i++)
@@ -171,6 +169,7 @@ void Player_move
 	Element _Barrier, Element _Dead, Element _Route,
 	unsigned int* score, bool* gameOver
 ){
+	char tmp = 0;
 	if (strSame(keyInput," ")) {
 		return;
 	}
@@ -193,7 +192,6 @@ void Player_move
 	}
 	else if (Player_interact(keyInput, playerLocal, _Route) || Player_interact(keyInput, playerLocal, obj_rail))
 	{
-
 		if (strSame(keyInput, unitVect.up))
 		{
 			(*score)++;
@@ -246,5 +244,16 @@ Map_CTRL Map_print(Pos row, Pos col) {
 	for (int i = 0; i < Map_reduced_row; i++) {
 		cursorMove_abs(row + i, col);
 		printf("%s", Map_reduced[i]);
+		if (i == player_pos.row) {
+			cursorMove_abs(row + i, col);
+			for (int j = 0; j < Map_reduced_col; j++) {
+				if (j == player_pos.col) {
+					cursorMove_abs(row + i, col + j);
+					txtDesign(_None, _Yellow, _Yellow);
+					printf(" ");
+					txt_allReset();
+				}
+			}
+		}
 	}
 }
